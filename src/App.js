@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import PokemonList from './PokemonList';
-import Pagination from './Pagination';
+import 'bootstrap/dist/css/bootstrap.min.css'
+
+import './App.css';
+import NavBar from './components/layout/NavBar'
+import PokemonList from './components/pokemon/PokemonList';
+import Pagination from './components/layout/Pagination';
 import axios from 'axios';
 
 function App() {
@@ -38,13 +42,16 @@ function App() {
   if (loading) return 'Loading...';
 
     return (
-      <>  
-        <PokemonList pokemon={pokemon} />
-        <Pagination  //le paso al componente pagination las funciones gotoNextPage y gotoPrevPage para que las pueda utilizar
-          gotoNextPage={nextPageUrl ? gotoNextPage : null}
-          gotoPrevPage={prevPageUrl ? gotoPrevPage : null}
-        />
-      </>
+      <div className='App'>  
+        <NavBar />
+          <div>
+            <PokemonList pokemon={pokemon} />
+            <Pagination  //le paso al componente pagination las funciones gotoNextPage y gotoPrevPage para que las pueda utilizar
+              gotoNextPage={nextPageUrl ? gotoNextPage : null}
+              gotoPrevPage={prevPageUrl ? gotoPrevPage : null}
+            />
+         </div>
+      </div>
     );
 };
 
