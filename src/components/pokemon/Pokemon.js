@@ -14,7 +14,26 @@ export default function Pokemon({ name }) {
 // </div>
 
     const [pokemon, setPokemon] = useState({})
-
+    var TYPE_COLORS = {
+        bug: 'B1C12E',
+        dark: '4F3A2D',
+        dragon: '755EDF',
+        electric: 'FCBC17',
+        fairy: 'F4B1F4',
+        fighting: '823551D',
+        fire: 'E73B0C',
+        flying: 'A3B3F7',
+        ghost: '6060B2',
+        grass: '74C236',
+        ground: 'D3B357',
+        ice: 'A3E7FD',
+        normal: 'C8C4BC',
+        poison: '934594',
+        psychic: 'ED4882',
+        rock: 'B9A156',
+        steel: 'B5B5C3',
+        water: '3295F6'
+      };
     useEffect(() => {
         axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`)
         .then(res => {
@@ -25,7 +44,7 @@ export default function Pokemon({ name }) {
     if(pokemon.name){
         console.log(pokemon.stats.map(el => ({base_stat: el.base_stat, name:el.stat.name})))
         if(pokemon.types.length > 1){
-            var types = pokemon.types[0].type.name + '/' + pokemon.types[1].type.name
+            var types = pokemon.types[0].type.name
         } else {
             var types = pokemon.types[0].type.name
         }
@@ -40,7 +59,10 @@ export default function Pokemon({ name }) {
                             </div>
                             <div className="col-7">
                                 <div className="float-right">
-                                    <span className="badge badge-pill mr-1" style={{backgroundColor: 'rgb(200, 196, 188)', color: 'white'}}>Normal</span>
+                                    {pokemon.types.map(el => {
+                                        console.log(el.type.name);
+                                        return <span className="badge badge-pill mr-1" style={{backgroundColor: `#${TYPE_COLORS[el.type.name]}`, color: 'white'}}>{el.type.name.toUpperCase()}</span>
+                                    })}
                                 </div>
                             </div>
                             </div>
@@ -54,7 +76,7 @@ export default function Pokemon({ name }) {
                                     <div className="col-12 col-md-3">HP</div>
                                     <div className="col-12 col-md-9">
                                         <div className="progress">
-                                        <div className="progress-bar " role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style={{width: '55%', backgroundColor: 'rgb(200, 196, 188)'}}><small>55</small></div>
+                                        <div className="progress-bar " role="progressbar" aria-valuenow="25" aria-valuemin="1" aria-valuemax="255" style={{width: '55%', backgroundColor: 'rgb(200, 196, 188)'}}><small>55</small></div>
                                         </div>
                                     </div>
                                 </div>
