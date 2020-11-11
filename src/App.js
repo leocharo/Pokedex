@@ -4,12 +4,14 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css';
 import NavBar from './components/layout/NavBar'
 import PokemonList from './components/pokemon/PokemonList';
+import Pokemon from './components/pokemon/Pokemon';
 import Pagination from './components/layout/Pagination';
 import axios from 'axios';
+import { Route } from 'react-router-dom';
 
 function App() {
   const [pokemon, setPokemon] = useState([]); 
-  const [currentPageUrl, setcurrentPageUrl] = useState('https://pokeapi.co/api/v2/pokemon'); // por default le paso la primera pagina de la api a current page url
+  const [currentPageUrl, setcurrentPageUrl] = useState('https://pokeapi.co/api/v2/pokemon?limit=12'); // por default le paso la primera pagina de la api a current page url
   const [nextPageUrl, setnextPageUrl] = useState(); 
   const [prevPageUrl, setprevPageUrl] = useState();
   const [loading, setLoading] = useState(true); //by default app is loading
@@ -24,12 +26,17 @@ function App() {
       setLoading(false); //request succesful loading = false
       setnextPageUrl(res.data.next) ;//url for the next page
       setprevPageUrl(res.data.previous);
-      setPokemon(res.data.results.map(p => p.name)); //recibo un array vacio con los nombres de los poke y con el map los divido en cada uno
+      setPokemon(res.data.results); //recibo un array vacio con los nombres de los poke y con el map los divido en cada uno
     });
 
     return () => cancel() //cancela la request a la api cada vez que hacemos una nueva
 
   }, [currentPageUrl]) // cada vez que currentPageUrl CAMBIA re renderiza el code dentro del useEffect
+
+
+  // DID MOUNT (CUANDO SE MONTA EL COMPONENTE)
+  // DID UPDATE (CUANDO SE ACTUALIZA)
+  // WILL UNMOUNT (CUANDO SE DESMONTA)
 
   function gotoNextPage() {
     setcurrentPageUrl(nextPageUrl)
@@ -39,19 +46,29 @@ function App() {
     setcurrentPageUrl(prevPageUrl)
   }
 
-  if (loading) return 'Loading...';
+  if (loading) return (
+    <div className="spinner">
+      <div className="lds-ring">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  );
 
     return (
-      <div className='App'>  
+      <React.Fragment>  
         <NavBar />
-          <div>
-            <PokemonList pokemon={pokemon} />
-            <Pagination  //le paso al componente pagination las funciones gotoNextPage y gotoPrevPage para que las pueda utilizar
-              gotoNextPage={nextPageUrl ? gotoNextPage : null}
-              gotoPrevPage={prevPageUrl ? gotoPrevPage : null}
-            />
-         </div>
-      </div>
+        <Route exact path='/'>
+          <PokemonList pokemon={pokemon}/>
+          <Pagination 
+            gotoNextPage={nextPageUrl ? gotoNextPage : null} 
+            gotoPrevPage={prevPageUrl ? gotoPrevPage : null}
+          />
+        </Route>
+        <Route path='/pokemon/:name' render={({ match }) => <Pokemon name={match.params.name} />} />
+      </React.Fragment>
     );
 };
 
